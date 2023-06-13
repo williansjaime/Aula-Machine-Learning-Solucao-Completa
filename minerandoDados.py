@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 
 # Lib graficas
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 
