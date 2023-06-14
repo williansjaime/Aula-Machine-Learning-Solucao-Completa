@@ -148,3 +148,82 @@ Base_Dados.loc[Base_Dados['rent amount (R$)'] <=10000]['area'].describe()
 Base_Dados['property tax (R$)'].sort_values( ascending=False).head(20)
 
 Base_Dados.iloc[ 6645 ]
+
+
+
+# Ajuste das colunas categoricas
+Base_Dados['animal'] = Base_Dados['animal'].map( {'acept':1, 'not acept':0} )
+Base_Dados['furniture'] = Base_Dados['furniture'].map( {'furnished':1, 'not furnished':0} )
+
+# Filtrar a Cidade de São Paulo
+Filtro_SP = Base_Dados.loc[ Base_Dados['city'] == 'São Paulo']
+
+# Verificar
+Filtro_SP.head()
+
+# Retirando a Coluna Cidade
+Filtro_SP.drop( columns=['city'], inplace=True )
+
+# Separa os dados
+Caracteristicas = Filtro_SP.drop( columns=['rent amount (R$)'] )
+Previsor = Filtro_SP['rent amount (R$)']
+
+# VErificar
+Caracteristicas.shape, Previsor.shape
+
+# Caracterticas
+Caracteristicas.head()
+
+# Previsoor
+Previsor.head()
+
+# Correlação
+Filtro_SP.corr()
+
+# Proxima de 1 - Correlação Possitva [ Ambas Sobem ]
+# Proxima de -1 - Correlação Negativa [ Uma sobe outra desce ]
+
+# Yellowbrick
+from yellowbrick.features import Rank2D
+
+# Definir o metodo
+Correlacao = Rank2D( algoritmo='pearson' )
+
+# Fitar função
+Correlacao.fit( Caracteristicas, Previsor )
+Correlacao.transform( Caracteristicas )
+Correlacao.show();
+
+
+# Separa os dadoos
+from sklearn.model_selection import train_test_split
+
+# Divisão dos dados
+x_treino, x_teste, y_treino, y_teste = train_test_split(
+    Caracteristicas, Previsor, test_size=0.2, random_state=10
+)
+
+print(f'Dados de Treino: { x_treino.shape[0] }')
+print(f'Dados de Teste: { x_teste.shape[0] }')
+
+# Features mais relevantes
+from sklearn.feature_selection import mutual_info_regression
+from sklearn.feature_selection import SelectKBest
+
+# Selecao de features
+def Selecao_Features( x_treino, y_treino ):
+
+  # Configurar para selecionar as features
+  Selecao = SelectKBest( score_func=mutual_info_regression, k=5 )
+
+  # Fitar o aprendizado
+  Selecao.fit( x_treino, y_treino )
+
+  return Selecao
+
+# Aplicar essa função
+Scores = Selecao_Features( x_treino, y_treino )
+
+# Analisar
+for Posicao, Score in enumerate( Scores.scores_ ):
+  print( f' { x_treino.columns[Posicao] } : {Score}' )
