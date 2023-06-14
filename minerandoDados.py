@@ -77,4 +77,74 @@ Base_Dados['floor'] = pd.to_numeric( Base_Dados['floor'] )
 
   # Mostrando
   #print( Coluna, '\n', Analise, '\n')
-print(len( Colunas_Numericas ))
+#print(len( Colunas_Numericas ))
+
+# Grid - Gráficos
+
+# Tamanho
+Figura, Eixo = plt.subplots( figsize=(20, 30) )
+
+# Cor de fundo
+Cor_Fundo = '#f5f5f5'
+Figura.set_facecolor( Cor_Fundo )
+
+# Paleta de Cores
+Paleta_Cores = sns.color_palette( 'flare', len(Colunas_Numericas) * 2 )
+
+# Titulo
+plt.suptitle('Análise das Variaveis Numericas', fontsize=22, color='#404040', fontweight=600 )
+
+# Estrutura
+Linhas = 7 # (Todas as infos numericas)
+Colunas = 2 #( Boxplot - Distplot)
+Posicao = 1 # Posicao inicial do grid
+
+# Loop para plotar os gráficos
+for Coluna in Colunas_Numericas:
+
+  # Plot no Grid -- Boxplot
+  plt.subplot( Linhas, Colunas, Posicao )
+
+  # Titulo
+  plt.title( f'{Coluna}', loc='left', fontsize=14, fontweight=200 )
+
+  # Plot
+  sns.boxplot( data=Base_Dados, y=Coluna, showmeans=True, saturation=0.75, 
+              linewidth=1, color=Paleta_Cores[Posicao], width=0.25 )
+
+  # Mudar
+  Posicao += 1
+
+  # Plot no Grid -- Distplot
+  plt.subplot( Linhas, Colunas, Posicao )
+
+  # Titulo
+  plt.title( f'{Coluna}', loc='left', fontsize=14, fontweight=200 )
+
+  # Plot
+  sns.distplot( Base_Dados[Coluna], color=Paleta_Cores[ Posicao - 1 ] )
+
+  # Mudar
+  Posicao += 1
+
+# Ajute de Grid
+plt.subplots_adjust( top=0.95, hspace=0.3 )
+
+Base_Dados.loc[Base_Dados['area']<=10000]['area'].describe()
+
+#Investigar valor do condominio
+Base_Dados.loc[Base_Dados['hoa (R$)']<=10000 ]['hoa (R$)'].describe()
+
+Base_Dados['hoa (R$)'].sort_values(ascending=False).head(20)
+
+#Pesquisar intens na base
+Base_Dados.iloc[ 6979 ]
+
+Base_Dados['rent amount (R$)'].describe()
+
+Base_Dados.loc[Base_Dados['rent amount (R$)'] <=10000]['area'].describe()
+
+#filtar IPTU
+Base_Dados['property tax (R$)'].sort_values( ascending=False).head(20)
+
+Base_Dados.iloc[ 6645 ]
