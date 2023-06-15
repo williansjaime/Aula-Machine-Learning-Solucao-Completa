@@ -227,3 +227,35 @@ Scores = Selecao_Features( x_treino, y_treino )
 # Analisar
 for Posicao, Score in enumerate( Scores.scores_ ):
   print( f' { x_treino.columns[Posicao] } : {Score}' )
+
+
+# Modelo Random Forest Regresson
+from sklearn.ensemble import RandomForestRegressor
+
+# Instanciar
+Modelo_Floresta = RandomForestRegressor( max_depth=5 )
+
+# Fitar 
+Modelo_Floresta.fit( x_treino, y_treino )
+
+# Avaliar a performance
+Previsoes = Modelo_Floresta.predict( x_teste )
+
+# Funcao para avaliar
+from sklearn.metrics import mean_squared_error, r2_score
+from math import sqrt
+
+print(f'RMSE: { sqrt(mean_squared_error( y_teste, Previsoes ) ) } ')
+print(f'Score: { r2_score( y_teste, Previsoes ) } ')
+
+# Avaliando Yellowbrick
+from yellowbrick.regressor import PredictionError
+
+# Instanciar
+Modelo = RandomForestRegressor( max_depth=5 )
+Erro_Modelo = PredictionError( Modelo )
+
+# Fitar
+Erro_Modelo.fit( x_treino, y_treino )
+Erro_Modelo.score( x_teste, y_teste )
+Erro_Modelo.show();
