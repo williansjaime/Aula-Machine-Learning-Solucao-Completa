@@ -259,3 +259,16 @@ Erro_Modelo = PredictionError( Modelo )
 Erro_Modelo.fit( x_treino, y_treino )
 Erro_Modelo.score( x_teste, y_teste )
 Erro_Modelo.show();
+
+# Exportando o modelo
+import joblib
+
+# Função
+joblib.dump( Modelo_Floresta, 'Modelo_Floresta_Aleatorio_v100.pkl')
+
+# Testando o modelo treinado
+Funcao_Modelo_Carregado = joblib.load('Modelo_Floresta_Aleatorio_v100.pkl')
+# Testando
+Funcao_Modelo_Carregado.predict( x_teste.head(1).values )
+
+x_teste.head(2).values
